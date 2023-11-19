@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Vehicle Inventory Manager</title>
+    <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-database.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+</head>
+<body>
+    <h2>Vehicle Inventory Manager</h2>
+    <div class="container mb-3">
+        <form id="vehicleForm">
+            <div class="form-group">
+                Unit Number: <input type="text" id="unitNumber" class="form-control" placeholder = "Enter New Unit Number" required>
+            </div>
+            <div class="form-group mb-3">
+                Division: <input type="text" id="division" class="form-control" placeholder = "Enter Division of Unit" required>
+            </div>
+            <button type="button" onclick="addVehicle()" class="btn btn-primary">Add Vehicle</button>
+        </form>
+    </div>
+
+    <div class="row mb-3"><h3>Current Inventory: </h3>
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-3">
+           <h5> Sort By: </h5>
+        </div>
+        <div class="col-md-3" id="sort_by_form">
+            <select id="sortDropdown" class="form-select" onchange="handleSortChange()">
+                <option value="dateOfEntry">Date of Entry</option>
+                <option value="vehicleType">Vehicle Type</option>
+                <option value="division">Division</option>
+                <option value="daysAtCurrentStage">Days at Current Stage</option>
+                <option value="unitNumber">Unit Number</option>
+            </select>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <h5>Select Status:</h5>
+        </div>
+        <div class="col-md-3">
+            <select id="statusFilter" class="form-select">
+                <option value="">All Units</option>
+                <option value="PDI">PDI</option>
+                <option value="Ready for Pickup">Ready for Pickup</option>
+                <option value="Picked Up">Picked Up</option>
+            </select>
+        </div>
+    </div>
+    <table id="inventoryTable" class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Unit Number</th>
+                <th scope="col">Vehicle Type</th>
+                <th scope="col">Date of Entry</th>
+                <th scope="col">Division</th>
+                <th scope="col">Status</th>
+                <th scope="col">Date Ready for Pickup</th>
+                <th scope="col">Pickup Date</th>
+                <th scope="col">Days at Current Stage</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody id="inventoryTableBody">
+            <!-- Table rows will be added here dynamically -->
+        </tbody>
+    </table>
+
+    <!-- Bootstrap Modal -->
+    <div class="modal" id="noteModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Unit Note</h5>
+                </div>
+                <div class="modal-body">
+                    <textarea id="noteText" class="form-control"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="saveNote()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="parseDate.js"></script>
+    <script src="vehicleTypeMapping.js"></script>
+    <script src="inventory.js"></script>
+
+</body>
+</html>
