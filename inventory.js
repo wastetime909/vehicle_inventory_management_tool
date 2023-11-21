@@ -1,14 +1,14 @@
 // Your Firebase configuration
 
 var firebaseConfig = {
-    apiKey: "AIzaSyC1MoeHZlItFfrz3LMXK4JQO_cPcv9w3ek",
-    authDomain: "parkinglot-management-1.firebaseapp.com",
-    databaseURL: "https://parkinglot-management-1-default-rtdb.firebaseio.com/",
-    projectId: "parkinglot-management-1",
-    storageBucket: "parkinglot-management-1.appspot.com",
-    messagingSenderId: "1028248970537",
-    appId: "1:1028248970537:web:9b05541f77074ddfcf0338",
-    measurementId: "G-1GP901VFGD"
+    apiKey: "",
+    authDomain: "",
+    databaseURL: "",
+    projectId: "",
+    storageBucket: "",
+    messagingSenderId: "",
+    appId: "",
+    measurementId: ""
 };
 
 
@@ -190,8 +190,14 @@ function displayVehicles(selectedStatus = '') {
             row.insertCell(5).innerHTML = vehicle.dateReadyForPickup || 'N/A';
             row.insertCell(6).innerHTML = vehicle.pickupDate || 'N/A';
             row.insertCell(7).innerHTML = calculateDaysAtCurrentStage(vehicle);
-            row.insertCell(8).innerHTML = getActionButton(vehicle);
-
+            
+            if(vehicle.status == 'Picked Up'){
+                // Removed delete button
+                // row.insertCell(8).innerHTML = getActionButton(vehicle);
+                row.insertCell(8).innerHTML = "";
+            } else {
+                row.insertCell(8).innerHTML = getActionButton(vehicle);
+            }
             // Add another column for notes
             var noteButton = vehicle.note
                 ? '<button onclick="showNote(\'' + vehicle.unitNumber + '\')" class="btn btn-secondary btn-sm">Show Note</button>'
@@ -206,7 +212,7 @@ function getActionButton(vehicle) {
 
     var buttons = '';
     if (vehicle.status === 'Picked Up') {
-        return `<button onclick="deleteVehicle('${vehicle.unitNumber}')" class="btn btn-warning btn-sm">Delete</button>`;
+        // return `<button onclick="deleteVehicle('${vehicle.unitNumber}')" class="btn btn-warning btn-sm">Delete</button>`;
     }
     else {
         if (vehicle.status !== 'Ready for Pickup') {
@@ -352,6 +358,30 @@ function saveNote() {
             alert("Failed to save note.");
         });
 }
+
+function exportToExcel() {
+
+    var vehiclesArray = [];
+    database.ref('vehicles').once('value', (snapshot) => {
+        const data = snapshot.val();
+        
+        for (var unit in data) {
+            var vehicle = data[unit];
+            vehicle.unitNumber = unit; 
+            vehiclesArray.push(vehicle);
+
+        }
+        console.log(vehiclesArray);
+        var ws = XLSX.utils.json_to_sheet(vehiclesArray);
+
+        var wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Vehicles");
+
+        // Generate an XLSX file
+        XLSX.writeFile(wb, "VehicleData.xlsx");
+    });
+}
+
 
 
 
